@@ -63,6 +63,7 @@ void CompressedSubscriber::subscribeImpl(
     const Callback& callback,
     rmw_qos_profile_t custom_qos)
 {
+	node_ = node;
     logger_ = node->get_logger();
     typedef image_transport::SimpleSubscriberPlugin<CompressedImage> Base;
     Base::subscribeImpl(node, base_topic, callback, custom_qos);
@@ -92,6 +93,19 @@ void CompressedSubscriber::internalCallback(const CompressedImage::ConstSharedPt
                                             const Callback& user_cb)
 
 {
+	std::string mode;
+	node_->get_parameter("mode", mode);
+	if (mode == "unchanged") {
+		config_.imdecode_flag = cv::IMREAD_UNCHANGED;
+	} else if (mode == "gray") {
+		config_.imdecode_flag = cv::IMREAD_GRAYSCALE;
+	} else if (mode == "color") {
+		config_.imdecode_flag = cv::IMREAD_COLOR;
+	} else {
+		RCLCPP_ERROR(logger_, "Unknown mode: %s, defaulting to 'unchanged", mode.c_str());
+		config_.imdecode_flag = cv::IMREAD_UNCHANGED;
+	}
+	RCLCPP_INFO(rclcpp::get_logger("logger"), "mode: %s", mode.data());
   cv_bridge::CvImagePtr cv_ptr(new cv_bridge::CvImage);
 
   // Copy message header

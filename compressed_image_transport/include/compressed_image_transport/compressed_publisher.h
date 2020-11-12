@@ -36,7 +36,7 @@
 
 #include <sensor_msgs/msg/image.hpp>
 #include <sensor_msgs/msg/compressed_image.hpp>
-#include <image_transport/simple_publisher_plugin.hpp>
+#include <image_transport/simple_publisher_plugin.h>
 
 #include <rclcpp/node.hpp>
 
@@ -55,6 +55,7 @@ public:
     return "compressed";
   }
 
+
 protected:
   // Overridden to set up reconfigure server
   void advertiseImpl(
@@ -65,21 +66,21 @@ protected:
   void publish(const sensor_msgs::msg::Image& message,
                const PublishFn& publish_fn) const;
 
-  struct Config {
-    // Compression format to use "jpeg" or "png"
-    std::string format;
-
-    // PNG Compression Level from 0 to 9.  A higher value means a smaller size.
-    // Default to OpenCV default of 3
-    int png_level;
-
-    // JPEG Quality from 0 to 100 (higher is better quality).
-    // Default to OpenCV default of 95.
-    int jpeg_quality;
-  };
-
-  Config config_;
   rclcpp::Logger logger_;
+  rclcpp::Node* node_;
+
+   // Compression format to use "jpeg" or "png"
+  std::string format_param_name_;
+
+   // PNG Compression Level from 0 to 9.  A higher value means a smaller size.
+   // Default to OpenCV default of 3
+  std::string png_level_param_name_;
+
+   // JPEG Quality from 0 to 100 (higher is better quality).
+   // Default to OpenCV default of 95.
+  std::string jpeg_quality_param_name_;
+
+
 };
 
 } //namespace compressed_image_transport

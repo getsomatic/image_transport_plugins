@@ -38,7 +38,8 @@
 
 #include <sensor_msgs/msg/image.hpp>
 #include <sensor_msgs/msg/compressed_image.hpp>
-#include <image_transport/simple_subscriber_plugin.hpp>
+#include <image_transport/simple_subscriber_plugin.h>
+
 
 namespace compressed_image_transport {
 
@@ -68,6 +69,7 @@ protected:
     int imdecode_flag;
   };
 
+  rclcpp::Node *node_;
   Config config_;
   rclcpp::Logger logger_;
 };
