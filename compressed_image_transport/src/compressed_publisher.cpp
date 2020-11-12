@@ -139,8 +139,7 @@ void CompressedPublisher::publish(
   compressed.format = message.encoding;
 
   // Compression settings
-  std::vector<int> params;
-  params.resize(3, 0);
+  std::vector<int> params(2,0);
 
   // set config parameters to node_ parameters current values
   string format;
