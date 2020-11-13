@@ -67,25 +67,25 @@ void CompressedSubscriber::subscribeImpl(
     logger_ = node->get_logger();
     typedef image_transport::SimpleSubscriberPlugin<CompressedImage> Base;
     Base::subscribeImpl(node, base_topic, callback, custom_qos);
-    std::string mode;
-    rcl_interfaces::msg::ParameterDescriptor mode_description;
-    mode_description.name = "mode";
-    mode_description.type = rcl_interfaces::msg::ParameterType::PARAMETER_STRING;
-    mode_description.description = "OpenCV imdecode flags to use";
-    mode_description.read_only = false;
-    mode_description.additional_constraints = "Supported values: [unchanged, gray, color]";
-    mode = node->declare_parameter("mode", kDefaultMode, mode_description);
 
-    if (mode == "unchanged") {
-      config_.imdecode_flag = cv::IMREAD_UNCHANGED;
-    } else if (mode == "gray") {
-      config_.imdecode_flag = cv::IMREAD_GRAYSCALE;
-    } else if (mode == "color") {
-      config_.imdecode_flag = cv::IMREAD_COLOR;
-    } else {
-      RCLCPP_ERROR(logger_, "Unknown mode: %s, defaulting to 'unchanged", mode.c_str());
-      config_.imdecode_flag = cv::IMREAD_UNCHANGED;
-    }
+	uint ns_len = node->get_effective_namespace().length();
+	std::string param_base_name = base_topic.substr(ns_len);
+	std::replace(param_base_name.begin(), param_base_name.end(), '/', '.');
+	mode_param_name_ = param_base_name + ".mode";
+
+	if (!node->has_parameter(mode_param_name_)) {
+		rcl_interfaces::msg::ParameterDescriptor mode_description;
+		mode_description.name = "mode";
+		mode_description.type = rcl_interfaces::msg::ParameterType::PARAMETER_STRING;
+		mode_description.description = "OpenCV imdecode flags to use";
+		mode_description.read_only = false;
+		mode_description.additional_constraints = "Supported values: [unchanged, gray, color]";
+		node->declare_parameter(mode_param_name_, kDefaultMode, mode_description);
+	}
+	else
+	{
+		RCLCPP_WARN(logger_, mode_param_name_ + " was previously delared");
+	}
 }
 
 
@@ -94,7 +94,7 @@ void CompressedSubscriber::internalCallback(const CompressedImage::ConstSharedPt
 
 {
 	std::string mode;
-	node_->get_parameter("mode", mode);
+	node_->get_parameter(mode_param_name_, mode);
 	if (mode == "unchanged") {
 		config_.imdecode_flag = cv::IMREAD_UNCHANGED;
 	} else if (mode == "gray") {
@@ -105,7 +105,7 @@ void CompressedSubscriber::internalCallback(const CompressedImage::ConstSharedPt
 		RCLCPP_ERROR(logger_, "Unknown mode: %s, defaulting to 'unchanged", mode.c_str());
 		config_.imdecode_flag = cv::IMREAD_UNCHANGED;
 	}
-	RCLCPP_INFO(rclcpp::get_logger("logger"), "mode: %s", mode.data());
+	RCLCPP_DEBUG(rclcpp::get_logger("logger"), "mode: %s", mode.data());
   cv_bridge::CvImagePtr cv_ptr(new cv_bridge::CvImage);
 
   // Copy message header

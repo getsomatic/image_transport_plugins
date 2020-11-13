@@ -72,6 +72,7 @@ protected:
   rclcpp::Node *node_;
   Config config_;
   rclcpp::Logger logger_;
+  std::string mode_param_name_;
 };
 
 } //namespace image_transport

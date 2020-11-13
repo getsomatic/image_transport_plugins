@@ -62,8 +62,8 @@ TheoraPublisher::TheoraPublisher():
   encoder_setup_.fps_denominator = 1;
   encoder_setup_.keyframe_granule_shift = 6; // A good default for streaming applications
   // Note: target_bitrate and quality set to correct values in configCb
-  encoder_setup_.target_bitrate = -1;
-  encoder_setup_.quality = -1;
+  encoder_setup_.target_bitrate = 800000;
+  encoder_setup_.quality = 31;
 }
 
 TheoraPublisher::~TheoraPublisher()
