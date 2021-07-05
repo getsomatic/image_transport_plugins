@@ -43,7 +43,7 @@ class CompressedDepthPublisher : public image_transport::SimplePublisherPlugin<s
 public:
   virtual ~CompressedDepthPublisher() {}
 
-  virtual std::string getTransportName() const
+  std::string getTransportName() const override
   {
     return "compressedDepth";
   }

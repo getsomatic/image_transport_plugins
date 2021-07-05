@@ -47,9 +47,9 @@ class CompressedSubscriber : public image_transport::SimpleSubscriberPlugin<sens
 {
 public:
   CompressedSubscriber(): logger_(rclcpp::get_logger("CompressedSubscriber")) {}
-  virtual ~CompressedSubscriber() = default;
+  ~CompressedSubscriber() override = default;
 
-  virtual std::string getTransportName() const
+  std::string getTransportName() const override
   {
     return "compressed";
   }
@@ -69,7 +69,7 @@ protected:
     int imdecode_flag;
   };
 
-  rclcpp::Node *node_;
+  rclcpp::Node *node_{};
   Config config_;
   rclcpp::Logger logger_;
   std::string mode_param_name_;

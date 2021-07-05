@@ -48,9 +48,9 @@ class CompressedPublisher : public image_transport::SimplePublisherPlugin<Compre
 {
 public:
   CompressedPublisher(): logger_(rclcpp::get_logger("CompressedPublisher")) {}
-  virtual ~CompressedPublisher() = default;
+  ~CompressedPublisher() override = default;
 
-  virtual std::string getTransportName() const
+  std::string getTransportName() const override
   {
     return "compressed";
   }
@@ -64,10 +64,10 @@ protected:
       rmw_qos_profile_t custom_qos) override;
 
   void publish(const sensor_msgs::msg::Image& message,
-               const PublishFn& publish_fn) const;
+               const PublishFn& publish_fn) const override;
 
   rclcpp::Logger logger_;
-  rclcpp::Node* node_;
+  rclcpp::Node* node_{};
 
    // Compression format to use "jpeg" or "png"
   std::string format_param_name_;
