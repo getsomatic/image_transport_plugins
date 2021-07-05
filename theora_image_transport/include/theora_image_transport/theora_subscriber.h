@@ -47,7 +47,7 @@ public:
   TheoraSubscriber();
   virtual ~TheoraSubscriber();
 
-  virtual std::string getTransportName() const { return "theora"; }
+  std::string getTransportName() const override { return "theora"; }
 
 protected:
   // Overridden to bump queue_size, otherwise we might lose headers
@@ -56,7 +56,7 @@ protected:
     const std::string &base_topic,
     const Callback & callback,
     uint32_t queue_size,
-    rmw_qos_profile_t custom_qos);
+    rmw_qos_profile_t custom_qos) ;
 
   // The function that does the actual decompression and calls a user supplied
   // callback with the resulting image
